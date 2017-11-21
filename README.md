@@ -27,7 +27,7 @@ kubectl apply -f k8s/locust-slave-deployment.yaml
 kubectl rollout status deployment locust-slave
 
 # Open your browser (OSX only?)
-open http:/$(kubectl get svc locust -o jsonpath="{.status.loadBalancer.ingress[*].ip}"):8089
+open http://$(kubectl get svc locust -o jsonpath="{.status.loadBalancer.ingress[*].ip}"):8089
 
 # Attack!
 ```
