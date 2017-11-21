@@ -38,12 +38,13 @@ spec:
         image: gcr.io/planet-4-151612/locust:0.0.1
         imagePullPolicy: Always
         name: locust-slave
-        resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        resources:
+          requests:
+            cpu: "5m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-status: {}
