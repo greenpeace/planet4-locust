@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+locustcmd="$(type -P locust)"
+
+opts="-f ${LOCUST_FILE} --host=${TARGET_URL} ${LOCUST_OPTIONS}"
+
+if [ "${LOCUST_MODE}" = "master" ]
+then
+  opts="${opts} --master"
+elif [[ "${LOCUST_MODE}" = "slave" ]]
+then
+  opts="${opts} --slave --master-host=${LOCUST_MASTER}"
+fi
+
+echo "=> Starting locust"
+echo "${locustcmd} ${opts}"
+
+exec ${locustcmd} ${opts}
