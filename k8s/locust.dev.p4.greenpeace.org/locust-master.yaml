@@ -1,0 +1,95 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    run: locust-dev-master
+    p4.greenpeace.org/locust: dev.p4.greenpeace.org
+  name: locust-dev-master
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/locust-dev-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: locust-dev-master
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: locust-dev-master
+    spec:
+      containers:
+      - env:
+        - name: LOCUST_MODE
+          value: master
+        - name: INSECURE_SSL
+          value: "true"
+        - name: TARGET_URL
+          value: http://dev.p4.greenpeace.org
+        image: gcr.io/planet-4-151612/locust:0.0.1
+        imagePullPolicy: IfNotPresent
+        name: locust-dev-master
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            memory: "96Mi"
+            cpu: "100m"
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: locust-dev-master
+    p4.greenpeace.org/locust: dev.p4.greenpeace.org
+  name: locust-dev-master
+  selfLink: /api/v1/namespaces/default/services/locust-dev-master
+spec:
+  ports:
+  - name: port-1
+    port: 8089
+    protocol: TCP
+    targetPort: 8089
+  - name: port-2
+    port: 5557
+    protocol: TCP
+    targetPort: 5557
+  - name: port-3
+    port: 5558
+    protocol: TCP
+    targetPort: 5558
+  selector:
+    run: locust-dev-master
+  sessionAffinity: None
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: locust-dev-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: locust.dev.p4.greenpeace.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: locust-dev-master
+          servicePort: 8089

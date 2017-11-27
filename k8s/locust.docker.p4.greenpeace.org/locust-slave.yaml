@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  labels:
+    run: locust-docker-slave
+    p4.greenpeace.org/locust: docker.p4.greenpeace.org
+  name: locust-docker-slave
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      run: locust-docker-slave
+  strategy:
+    rollingUpdate:
+      maxSurge: 5
+      maxUnavailable: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: locust-docker-slave
+        p4.greenpeace.org/locust: docker.p4.greenpeace.org
+    spec:
+      containers:
+      - env:
+        - name: LOCUST_MASTER
+          value: locust-docker-master
+        - name: LOCUST_MODE
+          value: slave
+        - name: INSECURE_SSL
+          value: "true"
+        - name: TARGET_URL
+          value: https://docker.p4.greenpeace.org
+        image: gcr.io/planet-4-151612/locust:0.0.1
+        imagePullPolicy: IfNotPresent
+        name: locust-docker-slave
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+      dnsPolicy: ClusterFirst
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: locust-docker-autoscaler
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: locust-docker-slave
+  minReplicas: 5
+  maxReplicas: 30
+  targetCPUUtilizationPercentage: 60
