@@ -33,7 +33,7 @@ spec:
         - name: INSECURE_SSL
           value: "true"
         - name: TARGET_URL
-          value: http://dev.p4.greenpeace.org
+          value: https://dev.p4.greenpeace.org
         image: gcr.io/planet-4-151612/locust:0.0.1
         imagePullPolicy: IfNotPresent
         name: locust-dev-master
@@ -43,9 +43,6 @@ spec:
           requests:
             cpu: "50m"
             memory: "64Mi"
-          limits:
-            memory: "96Mi"
-            cpu: "100m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
