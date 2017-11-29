@@ -20,7 +20,7 @@ kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-master.yaml
 kubectl rollout status deployment locust
 
 # Create the Locust slave deployment and horizontal scaler
-kubectl apply -f k8s/locust-slave-deployment.yaml
+kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-slave-deployment.yaml
 kubectl rollout status deployment locust-slave
 
 # Open your browser (OSX only?)
