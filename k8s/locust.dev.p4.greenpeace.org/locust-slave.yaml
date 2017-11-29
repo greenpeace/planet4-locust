@@ -11,7 +11,7 @@ metadata:
   name: locust-dev-slave
   selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/locust-dev-slave
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       run: locust-dev-slave
@@ -46,10 +46,19 @@ spec:
           requests:
             cpu: "100m"
             memory: "256Mi"
-          limits:
-            memory: "384Mi"
-            cpu: "300m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: locust-dev-autoscaler
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: locust-dev-slave
+  minReplicas: 5
+  maxReplicas: 30
+  targetCPUUtilizationPercentage: 60
