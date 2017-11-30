@@ -39,8 +39,8 @@ spec:
         name: locust-docker-slave
         resources:
           requests:
-            cpu: "200m"
-            memory: "256Mi"
+            cpu: "400m"
+            memory: "512Mi"
       dnsPolicy: ClusterFirst
 ---
 apiVersion: autoscaling/v1
@@ -51,6 +51,6 @@ spec:
   scaleTargetRef:
     kind: Deployment
     name: locust-docker-slave
-  minReplicas: 5
-  maxReplicas: 30
-  targetCPUUtilizationPercentage: 60
+  minReplicas: 10
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 80
