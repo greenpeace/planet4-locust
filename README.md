@@ -4,6 +4,12 @@
 
 [Locust](https://locust.io) - An open source load testing tool
 
+Current test environments:
+
+http://locust.docker.p4.greenpeace.org
+http://locust.dev.p4.greenpeace.org
+http://locust.sysadmin-b.p4.greenpeace.org
+
 ```
 # Setup environment
 gcloud config set project planet-4-151612
@@ -15,6 +21,12 @@ gcloud container clusters create p4-locust-load-tester
 # Get kubectl credentials
 gcloud container clusters get-credentials p4-locust-load-tester
 
+# Install Helm (Download from https://helm.sh)
+helm init
+
+# Install Traefik from helm chart
+helm install --name ingress-controller --namespace kube-system --set dashboard.enabled=true,dashboard.domain=traefik.locust.p4.greenpeace.org stable/traefik
+
 # Create the Locust master deployment and service
 kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-master.yaml
 kubectl rollout status deployment locust
@@ -24,7 +36,7 @@ kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-slave-deployment.yaml
 kubectl rollout status deployment locust-slave
 
 # Open your browser (OSX only?)
-open http://$(kubectl get svc locust -o jsonpath="{.status.loadBalancer.ingress[*].ip}"):8089
+open http://locust.dev.p4.greenpeace.org
 
 # Attack!
 ```
