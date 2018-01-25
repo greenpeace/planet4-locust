@@ -1,45 +1,57 @@
-# Deploy a swarm of locusts on P4 servers!
+# Deploy a swarm of locusts on your servers!
 
 ![](https://media.giphy.com/media/dcubXtnbck0RG/giphy.gif)
 
 [Locust](https://locust.io) - An open source load testing tool
 
-Current test environments:
+## Master / Slave configuration on Kubernetes:
 
-http://locust.docker.p4.greenpeace.org
-http://locust.dev.p4.greenpeace.org
-http://locust.sysadmin-b.p4.greenpeace.org
+Requirements for the full GKE install:
 
+Google Cloud SDK: https://cloud.google.com/sdk/downloads
+
+Helm: https://docs.helm.sh/using_helm/
+
+Examples for the Greenpeace Planet4 Project:
 ```
 # Setup environment
 gcloud config set project planet-4-151612
-gcloud config set compute zone us-central1-b
+gcloud config set compute zone europe-west4
 
-# Create cluster
-gcloud container clusters create p4-locust-load-tester
+# Create cluster (or skip these steps if re-using an existing cluster)
+gcloud container clusters create locust-load-tester
 
 # Get kubectl credentials
-gcloud container clusters get-credentials p4-locust-load-tester
+gcloud container clusters get-credentials locust-load-tester
 
 # Install Helm (Download from https://helm.sh)
 helm init
 
-# Install Traefik from helm chart
-helm install --name ingress-controller --namespace kube-system --set dashboard.enabled=true,dashboard.domain=traefik.locust.p4.greenpeace.org stable/traefik
+# Install Traefik ingress controller from helm chart
+helm install --name ingress-controller --namespace kube-system stable/traefik
 
 # Create the Locust master deployment and service
 kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-master.yaml
-kubectl rollout status deployment locust
 
-# Create the Locust slave deployment and horizontal scaler
-kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-slave-deployment.yaml
+# Create the Locust slave deployment and horizontal autoscaler
+kubectl apply -f k8s/locust.dev.p4.greenpeace.org/locust-slave.yaml
+
+# Check to see the deployment completes successfully
 kubectl rollout status deployment locust-slave
 
-# Open your browser (OSX only?)
+# Open your browser to the web interface
 open http://locust.dev.p4.greenpeace.org
 
 # Attack!
 ```
+
+## Standalone command-line load testing:
+
+```
+docker run -e TARGET_URL="https://example.com" -e LOCUST_OPTIONS="-c 1000 -r 100" gcr.io/planet-4-151612/locust:0.0.2
+```
+
+Where `-c` specifies number of clients, and `-r` specifies the hatch rate (number of users to spawn per second). See https://docs.locust.io/en/latest/running-locust-without-web-ui.html for options.
 
 ---
 
