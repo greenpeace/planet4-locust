@@ -51,6 +51,6 @@ spec:
   scaleTargetRef:
     kind: Deployment
     name: locust-docker-slave
-  minReplicas: 10
+  minReplicas: 5
   maxReplicas: 20
   targetCPUUtilizationPercentage: 80
