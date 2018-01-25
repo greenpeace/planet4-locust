@@ -13,22 +13,30 @@ class UserBehavior(TaskSet):
 
     @task(10)
     def index_page(self):
+        self.toc_urls = []
         r = self.client.get("/")
         pq = PyQuery(r.content)
-        link_elements = pq(".nav-item a")
-        self.toc_urls = [
-            l.attrib["href"] for l in link_elements
-        ]
+        link_elements = pq("a")
+        for l in link_elements:
+            if "href" not in l.attrib:
+                continue
+            href=l.attrib["href"]
+            if os.getenv("TARGET_URL") in href:
+                self.toc_urls.append(href)
 
     @task(50)
     def load_page(self, url=None):
+        self.urls_on_current_page=[]
         url = random.choice(self.toc_urls)
         r = self.client.get(url)
         pq = PyQuery(r.content)
         link_elements = pq("a")
-        self.urls_on_current_page = [
-            l.attrib["href"] for l in link_elements if "href" in l.attrib and l.attrib["href"].startswith(os.getenv("TARGET_URL"))
-        ]
+        for l in link_elements:
+            if "href" not in l.attrib:
+                continue
+            href=l.attrib["href"]
+            if 'greenpeace.org/international' in href:
+                self.urls_on_current_page.append(href)
 
     @task(30)
     def load_sub_page(self):
