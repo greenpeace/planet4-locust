@@ -34,7 +34,7 @@ spec:
           value: "true"
         - name: TARGET_URL
           value: https://docker.p4.greenpeace.org
-        image: gcr.io/planet-4-151612/locust:0.0.1
+        image: gcr.io/planet-4-151612/locust:0.0.2
         imagePullPolicy: IfNotPresent
         name: locust-docker-slave
         resources:
