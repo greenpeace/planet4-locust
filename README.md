@@ -8,9 +8,9 @@
 
 Requirements for the full GKE install:
 
-Google Cloud SDK: https://cloud.google.com/sdk/downloads
+Google Cloud SDK: [https://cloud.google.com/sdk/downloads](https://cloud.google.com/sdk/downloads)
 
-Helm: https://docs.helm.sh/using_helm/
+Helm: [https://docs.helm.sh/using_helm/](https://docs.helm.sh/using_helm/)
 
 Examples for the Greenpeace Planet4 Project:
 
@@ -52,7 +52,7 @@ open http://locust.dev.p4.greenpeace.org
 docker run --rm -e TARGET_URL="https://example.com" -e LOCUST_OPTIONS="-c 1000 -r 100" gcr.io/planet-4-151612/locust:0.0.2
 ```
 
-Where `-c` specifies number of clients, and `-r` specifies the hatch rate (number of users to spawn per second). See https://docs.locust.io/en/latest/running-locust-without-web-ui.html for options.
+Where `-c` specifies number of clients, and `-r` specifies the hatch rate (number of users to spawn per second). See [https://docs.locust.io/en/latest/running-locust-without-web-ui.html](https://docs.locust.io/en/latest/running-locust-without-web-ui.html) for options.
 
 ---
 
