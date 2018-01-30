@@ -13,6 +13,7 @@ Google Cloud SDK: https://cloud.google.com/sdk/downloads
 Helm: https://docs.helm.sh/using_helm/
 
 Examples for the Greenpeace Planet4 Project:
+
 ```
 # Setup environment
 gcloud config set project planet-4-151612
@@ -48,7 +49,7 @@ open http://locust.dev.p4.greenpeace.org
 ## Standalone command-line load testing:
 
 ```
-docker run -e TARGET_URL="https://example.com" -e LOCUST_OPTIONS="-c 1000 -r 100" gcr.io/planet-4-151612/locust:0.0.2
+docker run --rm -e TARGET_URL="https://example.com" -e LOCUST_OPTIONS="-c 1000 -r 100" gcr.io/planet-4-151612/locust:0.0.2
 ```
 
 Where `-c` specifies number of clients, and `-r` specifies the hatch rate (number of users to spawn per second). See https://docs.locust.io/en/latest/running-locust-without-web-ui.html for options.
