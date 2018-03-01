@@ -35,7 +35,7 @@ class UserBehavior(TaskSet):
             if "href" not in l.attrib:
                 continue
             href=l.attrib["href"]
-            if 'greenpeace.org/international' in href:
+            if os.getenv("TARGET_URL") in href:
                 self.urls_on_current_page.append(href)
 
     @task(30)
