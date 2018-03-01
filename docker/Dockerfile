@@ -1,4 +1,4 @@
-FROM gcr.io/planet-4-151612/ubuntu:develop
+FROM gcr.io/planet-4-151612/ubuntu:latest
 
 MAINTAINER Raymond Walker <raymond.walker@greenpeace.org>
 
@@ -13,13 +13,12 @@ RUN apt-get update \
         libssl-dev \
         libxml2-dev \
         libxslt-dev \
+        libzmq3-dev \
         python \
         python-dev \
+        python-pip \
         python-setuptools \
-    && easy_install \
-        locustio \
-        pyzmq \
-        pyquery \
+    && pip install pyzmq locustio pyquery\
     && apt-get autoremove -yqq \
     && rm -Rf /tmp/* /var/tmp/* /var/lib/apt/lists/* \
     && rm -fr /usr/share/man/* /usr/share/doc/* /usr/share/locale/*
