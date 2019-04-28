@@ -1,14 +1,16 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
   labels:
+    app: locust
     run: locust-dev-slave
-    p4.greenpeace.org/locust: dev.p4.greenpeace.org
+    p4.greenpeace.org/locust: k8s.p4.greenpeace.org
   name: locust-dev-slave
 spec:
-  replicas: 5
+  replicas: 10
   selector:
     matchLabels:
       run: locust-dev-slave
@@ -22,37 +24,34 @@ spec:
       creationTimestamp: null
       labels:
         run: locust-dev-slave
-        p4.greenpeace.org/locust: dev.p4.greenpeace.org
+        p4.greenpeace.org/locust: k8s.p4.greenpeace.org
     spec:
       containers:
       - env:
         - name: LOCUST_MODE
           value: slave
-        - name: INSECURE_SSL
-          value: "true"
         - name: LOCUST_MASTER
           value: locust-dev-master
+        - name: CACHE_BUSTER
+          value: "true"
         - name: TARGET_URL
-          value: https://dev.p4.greenpeace.org
-        image: gcr.io/planet-4-151612/locust:0.0.2
-        imagePullPolicy: IfNotPresent
+          value: https://k8s.p4.greenpeace.org/flibble
+        image: gcr.io/planet-4-151612/locust:0.1.0
+        imagePullPolicy: Always
         name: locust-dev-slave
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         resources:
           requests:
-            cpu: "400m"
+            cpu: "500m"
             memory: "512Mi"
-      dnsPolicy: ClusterFirst
 ---
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: locust-dev-autoscaler
-spec:
-  scaleTargetRef:
-    kind: Deployment
-    name: locust-dev-slave
-  minReplicas: 10
-  maxReplicas: 20
-  targetCPUUtilizationPercentage: 80
+# apiVersion: autoscaling/v1
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: locust-dev-autoscaler
+# spec:
+#   scaleTargetRef:
+#     kind: Deployment
+#     name: locust-dev-slave
+#   minReplicas: 10
+#   maxReplicas: 20
+#   targetCPUUtilizationPercentage: 80

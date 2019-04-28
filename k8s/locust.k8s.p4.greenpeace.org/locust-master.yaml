@@ -1,20 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-  creationTimestamp: null
-  generation: 1
   labels:
-    run: locust-sysadminb-master
-    p4.greenpeace.org/locust: sysadmin-b.p4.greenpeace.org
-  name: locust-sysadminb-master
-  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/locust-sysadminb-master
+    app: locust
+    run: locust-dev-master
+    p4.greenpeace.org/locust: dev.p4.greenpeace.org
+  name: locust-dev-master
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/locust-dev-master
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: locust-sysadminb-master
+      run: locust-dev-master
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,30 +19,26 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        run: locust-sysadminb-master
+        run: locust-dev-master
     spec:
       containers:
       - env:
         - name: LOCUST_MODE
           value: master
-        - name: INSECURE_SSL
+        - name: CACHE_BUSTER
           value: "true"
         - name: TARGET_URL
-          value: https://sysadmin-b.p4.greenpeace.org/international
-        image: gcr.io/planet-4-151612/locust:0.0.2
-        imagePullPolicy: IfNotPresent
-        name: locust-sysadminb-master
+          value: https://k8s.p4.greenpeace.org/flibble
+        image: gcr.io/planet-4-151612/locust:0.1.0
+        imagePullPolicy: Always
+        name: locust-dev-master
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         resources:
           requests:
             cpu: "50m"
             memory: "64Mi"
-          limits:
-            memory: "96Mi"
-            cpu: "100m"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -54,12 +47,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   labels:
-    run: locust-sysadminb-master
-    p4.greenpeace.org/locust: sysadmin-b.p4.greenpeace.org
-  name: locust-sysadminb-master
-  selfLink: /api/v1/namespaces/default/services/locust-sysadminb-master
+    run: locust-dev-master
+    p4.greenpeace.org/locust: k8s.p4.greenpeace.org
+  name: locust-dev-master
 spec:
   ports:
   - name: port-1
@@ -75,21 +66,22 @@ spec:
     protocol: TCP
     targetPort: 5558
   selector:
-    run: locust-sysadminb-master
+    run: locust-dev-master
   sessionAffinity: None
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: locust-sysadminb-ingress
+  name: locust-dev-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: locust.sysadmin-b.p4.greenpeace.org
+  - host: locust.k8s.p4.greenpeace.org
     http:
       paths:
       - path: /
         backend:
-          serviceName: locust-sysadminb-master
+          serviceName: locust-dev-master
           servicePort: 8089
