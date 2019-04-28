@@ -17,7 +17,7 @@ Examples for the Greenpeace Planet4 Project:
 ```
 # Setup environment
 gcloud config set project planet-4-151612
-gcloud config set compute zone europe-west4
+gcloud config set compute zone us-central1-a
 
 # Create cluster (or skip these steps if re-using an existing cluster)
 gcloud container clusters create locust-load-tester
