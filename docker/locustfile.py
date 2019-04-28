@@ -22,6 +22,8 @@ class UserBehavior(TaskSet):
                 continue
             href=l.attrib["href"]
             if os.getenv("TARGET_URL") in href:
+                if os.getenv("CACHE_BUSTER").lower() == "true":
+                    href += "?test"
                 self.toc_urls.append(href)
 
     @task(50)
@@ -36,6 +38,8 @@ class UserBehavior(TaskSet):
                 continue
             href=l.attrib["href"]
             if os.getenv("TARGET_URL") in href:
+                if os.getenv("CACHE_BUSTER").lower() == "true":
+                    href += "?test"
                 self.urls_on_current_page.append(href)
 
     @task(30)
